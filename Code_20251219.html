@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陆川县第一中学 - 青春表白墙</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f0f7ff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(120deg, #4a90e2, #6bb6ff);
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        /* 发布表单样式 */
+        .publish-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .publish-box h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-left: 4px solid #4a90e2;
+            padding-left: 10px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+        #photo-upload {
+            border: 1px dashed #ddd;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #photo-upload:hover {
+            border-color: #4a90e2;
+            background-color: #f5faff;
+        }
+        #photo-preview {
+            margin-top: 15px;
+            display: none;
+            max-width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        /* 匿名选项样式 */
+        .anonymous-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .anonymous-group input {
+            width: auto;
+        }
+        /* 卡片按钮和留言区样式 */
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .like-btn:hover {
+            background-color: #f5faff;
+            border-color: #4a90e2;
+            color: #4a90e2;
+        }
+        .like-btn.active {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            color: white;
+        }
+        .delete-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #fef2f2;
+            border: 1px solid #fecdd3;
+            color: #ef4444;
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .delete-btn:hover {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+        .comment-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #f0f7ff;
+            border: 1px solid #4a90e2;
+            color: #4a90e2;
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .comment-btn:hover {
+            background-color: #e1edff;
+        }
+        .submit-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #3a80d2;
+        }
+        /* 表白墙内容区 */
+        .wall-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .card-content {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .card-time {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .card-anonymous {
+            color: #4a90e2;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        /* 留言区样式 */
+        .comment-section {
+            margin-top: 15px;
+            border-top: 1px dashed #ddd;
+            padding-top: 15px;
+        }
+        .comment-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .comment-input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .comment-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+        .comment-submit {
+            padding: 8px 12px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .comment-list {
+            max-height: 150px;
+            overflow-y: auto;
+            gap: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        .comment-item {
+            background-color: #f5faff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .comment-item span {
+            color: #4a90e2;
+            font-weight: 500;
+        }
+        .comment-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="header">
+            <h1>陆川县第一中学 青春表白墙</h1>
+            <p>把想说的话，留在这个夏天</p>
+        </div>
+
+        <!-- 发布表单 -->
+        <div class="publish-box">
+            <h2>发布你的心意</h2>
+            <div class="form-group">
+                <label for="title">标题（如：致高一（3）班的某某）</label>
+                <input type="text" id="title" placeholder="输入表白标题">
+            </div>
+            <div class="form-group">
+                <label for="content">表白内容</label>
+                <textarea id="content" rows="4" placeholder="写下你想说的话..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>上传照片（选填）</label>
+                <div id="photo-upload" onclick="document.getElementById('photo-input').click()">
+                    点击上传照片
+                    <input type="file" id="photo-input" accept="image/*" hidden onchange="previewPhoto(this)">
+                </div>
+                <img id="photo-preview" alt="照片预览">
+            </div>
+            <!-- 匿名选项 -->
+            <div class="anonymous-group">
+                <input type="checkbox" id="anonymous" checked>
+                <label for="anonymous">匿名发布</label>
+            </div>
+            <button class="submit-btn" onclick="publishCard()">发布表白</button>
+        </div>
+
+        <!-- 表白墙内容容器 -->
+        <div class="wall-box" id="wall-box">
+            <!-- 表白卡片会通过JS动态添加 -->
+        </div>
+    </div>
+
+    <script>
+        // 照片预览功能
+        function previewPhoto(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photo-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 点赞功能
+        function toggleLike(btn) {
+            btn.classList.toggle('active');
+            const likeCount = btn.querySelector('.like-count');
+            let count = parseInt(likeCount.textContent);
+            count = btn.classList.contains('active') ? count + 1 : count - 1;
+            likeCount.textContent = count;
+        }
+
+        // 删除卡片功能
+        function deleteCard(card) {
+            if(confirm('确定要删除这条表白吗？删除后无法恢复')){
+                card.remove();
+            }
+        }
+
+        // 提交留言功能
+        function submitComment(input, card) {
+            const commentText = input.value.trim();
+            if(!commentText) {
+                alert('留言内容不能为空！');
+                return;
+            }
+            const commentList = card.querySelector('.comment-list');
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN');
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item';
+            commentItem.innerHTML = `
+                <span>匿名</span>：${commentText}
+                <div class="comment-time">${timeStr}</div>
+            `;
+            commentList.appendChild(commentItem);
+            input.value = '';
+        }
+
+        // 发布表白卡片
+        function publishCard() {
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value.trim();
+            const preview = document.getElementById('photo-preview');
+            const isAnonymous = document.getElementById('anonymous').checked;
+            
+            if (!title || !content) {
+                alert('标题和内容不能为空哦！');
+                return;
+            }
+
+            // 创建卡片元素
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            // 拼接卡片内容
+            const photoHtml = preview.style.display === 'block' 
+                ? `<img class="card-photo" src="${preview.src}" alt="表白照片">` 
+                : '';
+            const anonymousHtml = isAnonymous 
+                ? `<p class="card-anonymous">【匿名发布】</p>` 
+                : '';
+
+            // 获取当前时间
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN');
+
+            card.innerHTML = `
+                ${photoHtml}
+                ${anonymousHtml}
+                <h3 class="card-title">${title}</h3>
+                <p class="card-content">${content}</p>
+                <p class="card-time">发布时间：${timeStr}</p>
+                <div class="card-actions">
+                    <div class="like-btn" onclick="toggleLike(this)">
+                        <span>❤️</span>
+                        <span class="like-count">0</span>
+                    </div>
+                    <div class="delete-btn" onclick="deleteCard(this.parentElement.parentElement)">
+                        <span>🗑️</span>
+                        <span>删除</span>
+                    </div>
+                </div>
+                <!-- 留言区 -->
+                <div class="comment-section">
+                    <div class="comment-input-group">
+                        <input type="text" class="comment-input" placeholder="写下你的留言...">
+                        <button class="comment-submit" onclick="submitComment(this.previousElementSibling, this.closest('.card'))">发送</button>
+                    </div>
+                    <div class="comment-list"></div>
+                </div>
+            `;
+
+            // 添加到表白墙
+            const wallBox = document.getElementById('wall-box');
+            wallBox.insertBefore(card, wallBox.firstChild);
+
+            // 清空表单
+            document.getElementById('title').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('photo-input').value = '';
+            preview.style.display = 'none';
+
+            alert('表白发布成功！');
+        }
+    </script>
+</body>
+</html>
